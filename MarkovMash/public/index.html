@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script
+  src="https://code.jquery.com/jquery-3.2.1.js"
+  integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	<input type="text" id="name">
+	<button id="sendName">Send Name</button>
+	<div id="error" style="display: none; color: red;">You must enter a name.</div>
+
+	<script>
+		$.get('/api/rand', function(response) {
+			$('#sendName').text(response);
+		});
+
+		$('#sendName').click(function(){
+			var name = $('#name').val();
+			if (name) {
+				$('#error').slideUp();
+				$.post('/api/name', {
+					name: name
+				}, function(res) {
+					alert(res);
+				});
+			} else {
+				$('#error').slideDown();
+			}
+		});
+	</script>
+</body>
+</html>
