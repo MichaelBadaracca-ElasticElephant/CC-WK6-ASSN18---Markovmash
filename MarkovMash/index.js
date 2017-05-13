@@ -26,6 +26,8 @@ app.use(bodyParser.json());
 	Adding Middleware to Express Server App
 */
 
+app.use(express.static('public'));
+
 app.use(function(req, res, next) {
 	console.log(req.url);
 	next();

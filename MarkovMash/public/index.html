@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -6,11 +6,12 @@
 	<script
   src="https://code.jquery.com/jquery-3.2.1.js"
   integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
-  crossorigin="anonymous"></script>
+  crossorigin="Markov Mash"></script>
 </head>
 <body>
-	<input type="text" id="name">
-	<button id="sendName">Send Name</button>
+    <h1 id="markov-tweet"></h1>
+	<input type="text" id="input-username">
+	<button id="send-username">Send Name</button>
 	<div id="error" style="display: none; color: red;">You must enter a name.</div>
 
 	<script>
@@ -18,14 +19,14 @@
 			$('#sendName').text(response);
 		});
 
-		$('#sendName').click(function(){
-			var name = $('#name').val();
-			if (name) {
+        $('#send-username').click(function(){
+            var user = $('#input-username').val();
+            var reqUrl = "/api/tweets/" + user;
+            console.log(reqUrl);
+            if (user) {
 				$('#error').slideUp();
-				$.post('/api/name', {
-					name: name
-				}, function(res) {
-					alert(res);
+                $.get(reqUrl, function(markovTweet) {
+                    $('#markov-tweet').text(markovTweet);
 				});
 			} else {
 				$('#error').slideDown();
