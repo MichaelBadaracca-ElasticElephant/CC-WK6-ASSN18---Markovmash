@@ -56,36 +56,127 @@
 
 
             $('#send-username').click(function () {
-                var user = $('#input-username').val();
-                var trainUrl = "/api/tweets/train/" + user;
+                console.log("*** CLICKED ***");
                 var generateUrl = "/api/tweets/generate/";
 
-                //loop through all inputs with the class username and put their value into an array
+                var trainUsersPromise = new Promise(resolve => {
+                    //var user = $('#input-username').val();
+
+
+                    //loop through all inputs with the class username and put their value into an array
+                    var users = getUsersFromInputFields();
+                    console.log(users);
+
+                    //for (var userCount = 0; userCount < users.length; userCount++) {
+                    //    var trainUrl = "/api/tweets/train/" + users[userCount];
+                    //    console.log(trainUrl);
+                    //    if (users[userCount]) {
+                    //        $('#error').slideUp();
+                    //        $.get(trainUrl, function (response) {
+                    //            console.log("Response: " + response);
+                    //            //Resolve the promise once the last response from the last user training has been recieved
+                    //            if (userCount == users.length) {
+                    //                console.log("Last user finished");
+                    //                resolve(response);
+                                    
+                    //            }
+                    //        });
+                    //    } else {
+                    //        $('#error').slideDown();
+                    //    }
+                    //}
+
+
+                    var userCount = 0;
+                    var previousUserCount = userCount;
+                    while (userCount < users.length) {
+                        //only execute code once the previous get request has recieved a response
+                        //can check this by seeing if the userCount has increased
+                        if (userCount === previousUserCount + 1) {
+                            var trainUrl = "/api/tweets/train/" + users[userCount];
+                            console.log(trainUrl);
+                            if (users[userCount]) {
+                                $('#error').slideUp();
+                                $.get(trainUrl, function (response) {
+                                    console.log("Response: " + response);
+                                    debugger;
+                                    //increment the userCount only once a response has been recieved
+                                    //tried using for loop and count updated before response was recieved back
+                                    userCount++;
+                                    //Resolve the promise once the last response from the last user training has been recieved
+                                    if (userCount == users.length) {
+                                        console.log("Last user finished");
+                                        resolve(response);
+                                    }
+                                });
+                            } else {
+                                $('#error').slideDown();
+                            }
+                        }
+                        
+                    }
+
+
+                    //resolve();
+                })
+
+                trainUsersPromise.then(function () {
+
+                     //once tweets are trained, generate the markov chain
+                    console.log("All training done");
+                    console.log(generateUrl);
+                    $.get(generateUrl, function (markovTweet) {
+                        $('#markov-tweet').text(markovTweet);
+                    });
+                })
+                //var user = $('#input-username').val();
+               
+                //var generateUrl = "/api/tweets/generate/";
+
+                ////loop through all inputs with the class username and put their value into an array
+                //var users = [];
+                //$(".username").each(function () {
+                //    users.push($(this).val());
+                //});
+                //console.log(users);
+
+                //for (user of users) {
+                //    var trainUrl = "/api/tweets/train/" + user;
+                //    console.log(trainUrl);
+                //    if (user) {
+                //        $('#error').slideUp();
+                //        //$.get(trainUrl, function (response) {
+                //        //    //console.log("Respnse: " + response);
+                //        //    //once tweets are trained, generate the markov chain
+                            
+                //        //    //$('#markov-tweet').text(markovTweet);
+                //        //});
+
+                //    } else {
+                //        $('#error').slideDown();
+                //    }
+                //}
+
+
+
+
+
+
+            });
+
+            function getUsersFromInputFields() {
                 var users = [];
                 $(".username").each(function () {
                     users.push($(this).val());
                 });
-                console.log(users);
+                return users;
+            }
 
+            
 
-                //console.log(trainUrl);
-                if (user) {
-                    $('#error').slideUp();
-                    $.get(trainUrl, function (response) {
-                        //console.log("Respnse: " + response);
-                        //once tweets are trained, generate the markov chain
-                        console.log(generateUrl);
-                        $.get(generateUrl, function (markovTweet) {
-                            $('#markov-tweet').text(markovTweet);
-                        });
-                        //$('#markov-tweet').text(markovTweet);
-                    });
-
-                } else {
-                    $('#error').slideDown();
-                }
-            });
         });
+
+
 
 	</script>
 </body>
