@@ -33,7 +33,16 @@ app.use(function(req, res, next) {
 	next();
 });
 
-app.get('/api/tweets/:user', function(req, res) {
+
+
+
+
+//have an endpoint to take in multiple users
+//could be comma separ
+
+//app.get(/api/tweets/multipleUsers/
+
+app.get('/api/tweets/train/:user', function(req, res) {
 	var username = req.params.user;
 	if (!username) {
 		res.send("oh no, there was no username 😕");
@@ -53,17 +62,23 @@ app.get('/api/tweets/:user', function(req, res) {
 			tweets = tweets.map(function(tweet) {
 				return tweet.text;
 			});
-			for (var i = 0; i < tweets.length; i++) {
+			for (var i = 0; i < 1; i++) {
 				markov.train(tweets[i]);
-			}
-			res.send(markov.generate(140));
+            }
+            res.send("Trained user " + username);
+			//res.send(markov.generate(140));
 		} else {
 			console.log(error);
 			res.send("oops there was an error");
 		}
-	});
+    });
+
+    
 });
 
+app.get('/api/tweets/generate/', function (req,res) {
+    res.send(markov.generate(140));
+});
 
 app.use(express.static('public'));
 
