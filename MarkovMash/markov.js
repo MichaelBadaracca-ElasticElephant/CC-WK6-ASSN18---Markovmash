@@ -50,7 +50,8 @@ function generate() {
 	while (currentWord !== "eot") {
 		output += currentWord + " ";
 		currentWord = pickRandomNext(currentWord);
-	}
+    }
+    output = output.replace("sot", "");
 	return output;
 }
 
