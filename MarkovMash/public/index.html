@@ -10,28 +10,65 @@
 </head>
 <body>
     <h1 id="markov-tweet"></h1>
-	<input type="text" id="input-username">
-	<button id="send-username">Send Name</button>
+    <div id="username-inputs">
+        <input type="text" id="input-username">
+    </div>
+	
+	<button id="send-username">Make Markov Tweet</button>
+    <button id="add-username-field">Add Another User</button>
 	<div id="error" style="display: none; color: red;">You must enter a name.</div>
 
 	<script>
-		$.get('/api/rand', function(response) {
-			$('#sendName').text(response);
-		});
 
-        $('#send-username').click(function(){
-            var user = $('#input-username').val();
-            var reqUrl = "/api/tweets/" + user;
-            console.log(reqUrl);
-            if (user) {
-				$('#error').slideUp();
-                $.get(reqUrl, function(markovTweet) {
-                    $('#markov-tweet').text(markovTweet);
-				});
-			} else {
-				$('#error').slideDown();
-			}
-		});
+         //create a button to add more fields to mash up
+        //if there are multiple feilds change 
+        $(document).ready(function () {
+            var numOfInputs = 1;
+            //Add more input feilds to mash up more users when clicking button
+            $("#add-username-field").click(function () {
+                numOfInputs++;
+                //Build html for new input field and button to remove field. Give them inique ids based on the numOfInputs value
+                var inputId = "input-username-" + numOfInputs;
+                var removeInputButtonId = "remove-input-" + numOfInputs;
+                var newUsernameInput = "<input type='text' id='" + inputId + "'>";
+                var removeInputButton = "<button id='" + removeInputButtonId + "'>X</button>"; 
+
+                //Append new text box input
+                $('#username-inputs').append(newUsernameInput);
+                //Append new button to remove textbox with a click handler to remove the textbox and itself
+                //Referenced solution from this resource: http://stackoverflow.com/questions/1525664/jquery-how-to-bind-onclick-event-to-dynamically-added-html-element
+                $('#username-inputs').append(function () {
+                    return $(removeInputButton).click(function () {
+                        $('#' + inputId).remove();
+                        $('#' + removeInputButtonId).remove();
+                        numOfInputs--;
+                    })
+                });
+            });
+
+            //for each textbox, grab the value. If there are more than one textbox, make a different request
+
+            //Steps
+                //get content from multiple dynamically created textboxes and store them in an array
+                //if there is more than one element in the array, make an api call indicating we want to train from all the sources
+                //on backend, find a way to carryout the markov generatation that trains on each of the inpouts
+
+
+            $('#send-username').click(function () {
+                var user = $('#input-username').val();
+                var reqUrl = "/api/tweets/" + user;
+                console.log(reqUrl);
+                if (user) {
+                    $('#error').slideUp();
+                    $.get(reqUrl, function (markovTweet) {
+                        $('#markov-tweet').text(markovTweet);
+                    });
+                } else {
+                    $('#error').slideDown();
+                }
+            });
+        });
+
 	</script>
 </body>
 </html>
