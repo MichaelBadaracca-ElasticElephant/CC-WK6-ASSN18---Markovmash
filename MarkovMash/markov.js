@@ -28,7 +28,8 @@ function train(text) {
 			sanitize(words[i]),
 			sanitize(words[i + 1])
 		);
-	}
+    }
+    console.log("*** TRAINED WORDS ***", chain, "\n ***END OF TRAINED WORDS***");
 }
 
 function pickRandomNext(firstWord) {
@@ -52,6 +53,8 @@ function generate() {
 		currentWord = pickRandomNext(currentWord);
     }
     output = output.replace("sot", "");
+    //Reset trained cahin oif words after each generation to start fresh
+    chain = {};
 	return output;
 }
 
