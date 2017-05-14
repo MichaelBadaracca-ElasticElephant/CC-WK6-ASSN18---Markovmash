@@ -57,19 +57,27 @@
 
             $('#send-username').click(function () {
                 console.log("*** CLICKED ***");
-                var generateUrl = "/api/tweets/generate/";
-
-
-                //loop through all inputs with the class username and put their value into an array
+               
                 var users = getUsersFromInputFields();
                 console.log(users);
 
+                var trainingPromises = trainAllUsernames(users);
+
+                Promise.all(trainingPromises).then(values => {
+                    console.log("All promises complete")
+                    console.log(values);
+                    generateMarkovFromTrainedData();
+                });
+
+            });
+
+            function trainAllUsernames(users) {
                 var trainingPromises = [];
 
-                for (var userCount = 0; userCount < users.length; userCount++) {
-                    var trainUrl = "/api/tweets/train/" + users[userCount];
-                    console.log(trainUrl);
-                    if (users[userCount]) {
+                for (user of users) {
+                    var trainUrl = "/api/tweets/train/" + user;
+                    console.log("Sent call to training endpoint at " + trainUrl);
+                    if (user) {
                         $('#error').slideUp();
                         trainingPromises.push(makeTrainingPromise(trainUrl));
                     } else {
@@ -77,17 +85,11 @@
                     }
                 }
 
-                Promise.all(trainingPromises).then(values => {
-                    console.log("All promises complete")
-                    console.log(values);
-                    $.get(generateUrl, function (dataMarkovTweet) {
-                        $("#markov-tweet").text(dataMarkovTweet);
-                    })
-                });
-
-            });
+                return trainingPromises;
+            }
 
             function getUsersFromInputFields() {
+                //loop through all inputs with the class username and put their value into an array
                 var users = [];
                 $(".username").each(function () {
                     users.push($(this).val());
@@ -96,6 +98,7 @@
             }
 
             function makeTrainingPromise(trainUrl) {
+                //make a promise for a call to the training endpoint
                 var trainingPromise = new Promise(resolve => {
                     $.get(trainUrl, function (response) {
                         console.log("Response: " + response);
@@ -105,11 +108,14 @@
                 return trainingPromise;
             }
 
-            
-
+            function generateMarkovFromTrainedData() {
+                //Call the generate endpoint to generate a markov chain and display response to UI
+                var generateUrl = "/api/tweets/generate/";
+                $.get(generateUrl, function (dataMarkovTweet) {
+                    $("#markov-tweet").text(dataMarkovTweet);
+                })
+            }
         });
-
-
 
 	</script>
 </body>

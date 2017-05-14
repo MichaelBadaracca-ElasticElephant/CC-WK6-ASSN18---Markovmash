@@ -29,7 +29,7 @@ function train(text) {
 			sanitize(words[i + 1])
 		);
     }
-    console.log("*** TRAINED WORDS ***", chain, "\n ***END OF TRAINED WORDS***");
+    //console.log("*** TRAINED WORDS ***", chain, "\n ***END OF TRAINED WORDS***");
 }
 
 function pickRandomNext(firstWord) {

@@ -61,8 +61,9 @@ app.get('/api/tweets/train/:user', function(req, res) {
 		if (!error) {
 			tweets = tweets.map(function(tweet) {
 				return tweet.text;
-			});
-			for (var i = 0; i < 1; i++) {
+            });
+
+            for (var i = 0; i < tweets.length; i++) {
 				markov.train(tweets[i]);
             }
             res.send("Trained user " + username);
