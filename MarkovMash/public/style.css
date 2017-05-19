@@ -1,0 +1,15 @@
+.form-control{
+    width:200px;
+    display:inline;
+    margin:10px;
+}
+
+.btn{
+    margin:10px;
+}
+
+#markov-tweet{
+    margin:10px;
+    font-style:italic;
+    font-weight:normal;
+}
